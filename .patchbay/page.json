@@ -1,0 +1,15 @@
+{
+  "name": "Flair",
+  "pitch": "Put your own Playing, Listening or Watching card on your Discord profile, with presets, rotation and hotkeys. No account, no token.",
+  "category": "utilities",
+  "download": "match:FlairSetup-*.exe",
+  "web_app": "",
+  "signing": "",
+  "icon": "icon.png",
+  "thumbnail": "thumbnail.png",
+  "screenshots": [
+    "1-design.png",
+    "2-rotate.png",
+    "3-hotkeys.png"
+  ]
+}
