@@ -1,0 +1,56 @@
+<!doctype html>
+<!-- Source of docs/banner.png (2560x840) and docs/social-preview.png (1280x640). See tools/make-banner.ps1. -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html, body { margin: 0; width: 2560px; height: 840px; overflow: hidden; }
+  body {
+    background: radial-gradient(1400px 620px at 50% 108%, #161616, #0a0a0a 70%);
+    font-family: "Segoe UI Variable Display", "Segoe UI", sans-serif; color: #f4f4f4;
+    display: flex; align-items: center; justify-content: center; gap: 250px;
+  }
+  body.social { width: 1280px; height: 640px; flex-direction: column; gap: 34px; }
+  .mark { position: relative; width: 300px; height: 300px; display: grid; place-items: center; }
+  .mark svg { width: 260px; height: 260px; overflow: visible; }
+  .mark::after { content: ""; position: absolute; bottom: -30px; left: 50%; width: 220px; height: 22px; margin-left: -110px; border-radius: 50%; background: #000; filter: blur(2px); opacity: .9; }
+  h1 { margin: 0 0 6px -8px; font-size: 230px; line-height: 1; font-weight: 700; letter-spacing: -2px; }
+  p { margin: 0 0 40px; font-size: 76px; font-weight: 400; color: #a3a3a3; letter-spacing: -0.5px; }
+  .pills { display: flex; gap: 22px; }
+  .pills span { padding: 14px 32px; border-radius: 40px; border: 2.5px solid #3a3a3a; font-size: 34px; font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif; color: #f4f4f4; }
+  .live { display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #23a55a; margin-right: 16px; vertical-align: 2px; box-shadow: 0 0 0 8px rgba(35, 165, 90, 0.18); }
+  body.social .text { text-align: center; }
+  body.social .mark { width: 170px; height: 170px; }
+  body.social .mark svg { width: 150px; height: 150px; }
+  body.social .mark::after { width: 120px; margin-left: -60px; bottom: -14px; height: 14px; }
+  body.social h1 { font-size: 150px; margin: 0; }
+  body.social p { font-size: 46px; margin: 0; }
+  body.social .pills { display: none; }
+</style>
+</head>
+<body>
+  <div class="mark">
+    <svg viewBox="0 0 100 100"><path id="s" fill="#f4f4f4"/><path id="t" fill="#f4f4f4"/></svg>
+  </div>
+  <div class="text">
+    <h1>Flair</h1>
+    <p>Your own Discord status.</p>
+    <div class="pills"><span><i class="live"></i>Text, pictures, buttons</span><span>Presets and rotation</span><span>Free and open source</span></div>
+  </div>
+<script>
+  // the same astroid sparkle as the app icon (tools/make-icons.py)
+  function sparkle(cx, cy, r, k = 3.2) {
+    let d = '';
+    for (let i = 0; i <= 256; i++) {
+      const t = (i / 256) * Math.PI * 2, c = Math.cos(t), s = Math.sin(t);
+      const x = cx + Math.sign(c) * Math.abs(c) ** k * r, y = cy + Math.sign(s) * Math.abs(s) ** k * r;
+      d += (i ? 'L' : 'M') + x.toFixed(2) + ' ' + y.toFixed(2);
+    }
+    return d + 'Z';
+  }
+  document.getElementById('s').setAttribute('d', sparkle(44, 56, 42));
+  document.getElementById('t').setAttribute('d', sparkle(84, 16, 12));
+  if (location.hash === '#social') document.body.classList.add('social');
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyName>Flair</AssemblyName>
+    <ApplicationIcon>Assets\flair.ico</ApplicationIcon>
+    <RootNamespace>Flair</RootNamespace>
+    <Version>1.0.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Product>Flair</Product>
+    <Company>Flair</Company>
+    <Description>Flair</Description>
+    <Copyright>Copyright (c) 2026 slashneck</Copyright>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
+    <!-- Flair sits in the tray all day: keep it small. -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Assets\*.ico;Assets\*.png" LogicalName="Flair.Assets.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />
+  </ItemGroup>
+
+</Project>

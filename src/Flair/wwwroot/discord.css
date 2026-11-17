@@ -1,0 +1,113 @@
+/* A Discord profile popout and member list row in Discord's dark theme, for the live preview. */
+.dc {
+  --dc-bg: #111214;
+  --dc-popout: #232428;
+  --dc-card: #2b2d31;
+  --dc-line: rgba(255, 255, 255, 0.06);
+  --dc-header: #f2f3f5;
+  --dc-text: #dbdee1;
+  --dc-muted: #b5bac1;
+  --dc-faint: #949ba4;
+  --dc-green: #23a55a;
+  --dc-button: #4e5058;
+  --dc-button-hover: #6d6f78;
+  --dc-font: "gg sans", "Noto Sans", "Segoe UI", system-ui, sans-serif;
+  font-family: var(--dc-font);
+  color: var(--dc-text);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+.dc-backdrop {
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(88, 101, 242, 0.10), transparent 60%),
+    radial-gradient(90% 70% at 100% 100%, rgba(35, 165, 90, 0.06), transparent 55%),
+    #313338;
+  box-shadow: inset 0 0 0 1px var(--line);
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
+
+/* ---------- popout ---------- */
+.dc-popout {
+  width: 300px; border-radius: 8px; overflow: hidden; background: var(--dc-popout);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+.dc-banner { height: 105px; background: linear-gradient(135deg, #3a3c43, #1e1f22); position: relative; }
+.dc-banner.has-art { background-size: cover; background-position: center; filter: saturate(1.1); }
+.dc-banner.has-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.25)); }
+.dc-head { position: relative; padding: 0 16px; height: 46px; }
+.dc-avatar {
+  position: absolute; left: 16px; top: -46px; width: 92px; height: 92px; border-radius: 50%; padding: 6px; background: var(--dc-popout);
+}
+.dc-avatar img, .dc-avatar .face { width: 80px; height: 80px; border-radius: 50%; display: block; object-fit: cover; background: #5865f2; }
+.dc-avatar .face { display: grid; place-items: center; font: 700 30px var(--dc-font); color: #fff; }
+.dc-avatar .status {
+  position: absolute; right: 6px; bottom: 6px; width: 26px; height: 26px; border-radius: 50%; background: var(--dc-popout);
+  display: grid; place-items: center;
+}
+.dc-avatar .status::after { content: ""; width: 16px; height: 16px; border-radius: 50%; background: var(--dc-green); }
+.dc-body { padding: 0 16px 16px; }
+.dc-name { font: 700 20px/24px var(--dc-font); color: var(--dc-header); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-user { font: 400 14px/18px var(--dc-font); color: var(--dc-header); opacity: .85; margin-top: 2px; }
+
+/* ---------- activity ---------- */
+.dc-activity {
+  margin-top: 14px; padding: 12px; border-radius: 8px; background: var(--dc-bg);
+  transition: opacity .25s;
+}
+.dc-activity.off { opacity: .4; }
+.dc-kind { font: 600 12px/16px var(--dc-font); color: var(--dc-header); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+.dc-kind .more { color: var(--dc-muted); letter-spacing: 1px; font-weight: 700; }
+.dc-row { display: flex; gap: 12px; align-items: center; }
+.dc-art { position: relative; width: 64px; height: 64px; flex: none; }
+.dc-art .large {
+  width: 64px; height: 64px; border-radius: 8px; object-fit: cover; display: block; background: #2b2d31;
+}
+.dc-art .large.placeholder { display: grid; place-items: center; color: var(--dc-faint); }
+.dc-art .large.placeholder svg { width: 28px; height: 28px; stroke-width: 1.6; }
+.dc-art .small {
+  position: absolute; right: -4px; bottom: -4px; width: 24px; height: 24px; border-radius: 50%; object-fit: cover;
+  box-shadow: 0 0 0 3px var(--dc-bg); background: #2b2d31;
+}
+.dc-art .large-only.small { display: none; }
+.dc-lines { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.dc-title { font: 600 14px/18px var(--dc-font); color: var(--dc-header); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-line { font: 400 12px/16px var(--dc-font); color: var(--dc-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-line.timer { color: var(--dc-green); font-weight: 600; display: flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
+.dc-line.timer svg { width: 12px; height: 12px; stroke-width: 2.2; }
+.dc-progress { margin-top: 10px; }
+.dc-progress .track { height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.16); overflow: hidden; }
+.dc-progress .fill { height: 100%; background: var(--dc-header); border-radius: 2px; transition: width 1s linear; }
+.dc-progress .times { display: flex; justify-content: space-between; margin-top: 4px; font: 400 12px var(--dc-font); color: var(--dc-muted); font-variant-numeric: tabular-nums; }
+.dc-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.dc-button {
+  height: 32px; border-radius: 8px; background: var(--dc-button); color: #fff; font: 500 14px/32px var(--dc-font);
+  text-align: center; padding: 0 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: background .17s;
+  cursor: pointer;
+}
+.dc-button:hover { background: var(--dc-button-hover); }
+.dc-empty { font: 400 13px var(--dc-font); color: var(--dc-faint); padding: 4px 0; }
+.dc-tip {
+  position: fixed; z-index: 80; pointer-events: none; padding: 8px 12px; border-radius: 6px; background: #111214; color: #dbdee1;
+  font: 500 14px/18px var(--dc-font); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24); max-width: 260px;
+  animation: menu-in .1s var(--ease);
+}
+
+/* ---------- member list row ---------- */
+.dc-member {
+  width: 300px; display: flex; align-items: center; gap: 12px; padding: 6px 8px; border-radius: 4px; background: rgba(78, 80, 88, 0.3);
+}
+.dc-member .pic { position: relative; width: 32px; height: 32px; flex: none; }
+.dc-member .pic img, .dc-member .pic .face { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #5865f2; display: grid; place-items: center; font: 700 13px var(--dc-font); color: #fff; }
+.dc-member .pic::after {
+  content: ""; position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; border-radius: 50%; background: var(--dc-green);
+  box-shadow: 0 0 0 3px #3a3c42;
+}
+.dc-member .who { min-width: 0; flex: 1; }
+.dc-member .n { font: 500 16px/20px var(--dc-font); color: var(--dc-header); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-member .a { font: 400 12px/16px var(--dc-font); color: var(--dc-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-member .a b { font-weight: 600; }
+.dc-member .icon { color: var(--dc-muted); }
+.dc-member .icon svg { width: 16px; height: 16px; }
