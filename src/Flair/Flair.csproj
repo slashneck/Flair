@@ -10,7 +10,7 @@
     <AssemblyName>Flair</AssemblyName>
     <ApplicationIcon>Assets\flair.ico</ApplicationIcon>
     <RootNamespace>Flair</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>Flair</Product>
     <Company>Flair</Company>
