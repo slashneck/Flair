@@ -300,7 +300,7 @@
   }
 
   // ---------- shared presets ----------
-  const SHARE_PAGE = 'https://patchbay-sage.vercel.app/app/flair/presets';
+  const SHARE_PAGE = 'https://patchbayapps.com/app/flair/presets';
   const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
   const hostOf = (url) => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } };
 

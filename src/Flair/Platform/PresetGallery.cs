@@ -15,7 +15,7 @@ public sealed record GalleryPage(string Q, string Sort, int Page, int Pages, int
 /// </summary>
 public static class PresetGallery
 {
-    public const string Site = "https://patchbay-sage.vercel.app";
+    public const string Site = "https://patchbayapps.com";
     public const string SharePage = Site + "/app/flair/presets";
 #if DEBUG
     // lets a test point Flair at a local copy of the API

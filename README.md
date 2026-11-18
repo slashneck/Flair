@@ -60,7 +60,7 @@ it says so and reconnects by itself once Discord is back.
 on Flair, and it's in.
 
 **Shared presets.** Browse presets other people shared on
-[Patchbay](https://patchbay-sage.vercel.app/app/flair/presets), each shown as a card on your own profile, and import
+[Patchbay](https://patchbayapps.com/app/flair/presets), each shown as a card on your own profile, and import
 one with a click. Share yours there too. Shared presets go through the same checks as a file you open yourself, and
 Flair shows where their buttons lead before you import.
 
