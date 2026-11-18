@@ -24,6 +24,7 @@ public sealed class MainWindow : Form
     {
         "https://discord.com/developers/applications", "https://github.com/slashneck/Flair", "https://www.gnu.org/licenses/",
         "https://developer.microsoft.com/microsoft-edge/webview2", "https://github.com/dotnet/runtime",
+        PresetGallery.SharePage,
     };
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
     {
@@ -261,22 +262,13 @@ public sealed class MainWindow : Form
                     return new { names = added.Select(x => x.Name), first = added.FirstOrDefault()?.Id };
                 }
             case "presets.importText":
-                {
-                    // A file dropped on the window: the page reads it and passes the text, it goes through the same checks.
-                    string tmp = Path.Combine(Path.GetTempPath(), $"flair-drop-{Guid.NewGuid():N}.flair");
-                    try
-                    {
-                        string text = Str("text");
-                        if (text.Length > 512 * 1024) throw new InvalidDataException("That file is too big to be a Flair preset");
-                        await File.WriteAllTextAsync(tmp, text);
-                        var added = _engine.Import(tmp);
-                        return new { names = added.Select(x => x.Name), first = added.FirstOrDefault()?.Id };
-                    }
-                    finally
-                    {
-                        try { File.Delete(tmp); } catch { }
-                    }
-                }
+                // A file dropped on the window: the page reads it and passes the text, it goes through the same checks.
+                return await ImportText(Str("text"));
+
+            case "gallery.list":
+                return await PresetGallery.ListAsync(Str("q"), Str("sort"), p["page"]?.GetValue<int>() ?? 1);
+            case "gallery.import":
+                return await ImportText(await PresetGallery.DownloadAsync(Str("id")));
 
             case "link.open":
                 OpenLink(Str("url"));
@@ -293,6 +285,22 @@ public sealed class MainWindow : Form
 
             default:
                 throw new InvalidOperationException($"Unknown call {method}");
+        }
+    }
+
+    private async Task<object> ImportText(string text)
+    {
+        if (text.Length > 512 * 1024) throw new InvalidDataException("That file is too big to be a Flair preset");
+        string tmp = Path.Combine(Path.GetTempPath(), $"flair-import-{Guid.NewGuid():N}.flair");
+        try
+        {
+            await File.WriteAllTextAsync(tmp, text);
+            var added = _engine.Import(tmp);
+            return new { names = added.Select(x => x.Name), first = added.FirstOrDefault()?.Id };
+        }
+        finally
+        {
+            try { File.Delete(tmp); } catch { }
         }
     }
 

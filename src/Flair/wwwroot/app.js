@@ -35,6 +35,7 @@
       return p;
     },
     show(view, id) { navigate(view, id); },
+    imported(r) { afterImport(r); },
     async create() {
       const p = await flair.call('preset.create');
       store.snapshot.presets.push(p);
@@ -87,6 +88,8 @@
       current = window.views.rotation(main, store);
     } else if (view === 'settings') {
       current = window.views.settings(main, store, version, update);
+    } else if (view === 'gallery') {
+      current = window.views.gallery(main, store);
     } else if (view === 'guide') {
       current = window.views.guide(main, store);
     }

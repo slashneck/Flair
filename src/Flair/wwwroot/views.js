@@ -220,7 +220,7 @@
         h('section.card', null,
           h('h3.card-title', null, 'App'),
           row('Start with Windows', 'Starts quietly in the tray and brings your last status back', toggle(draft.startWithWindows, (v) => set((d) => { d.startWithWindows = v; }))),
-          row('Check for updates', 'The only thing Flair asks the internet for besides your pictures', toggle(draft.checkForUpdates, (v) => set((d) => { d.checkForUpdates = v; })))),
+          row('Check for updates', 'Asks GitHub once in a while whether a new version is out', toggle(draft.checkForUpdates, (v) => set((d) => { d.checkForUpdates = v; })))),
         h('section.card', null,
           h('h3.card-title', null, 'About'),
           h('div.setting-row', null, updateBox, updateBtn),
@@ -299,5 +299,93 @@
     return { refresh() {}, leave() { if (save.pending()) save.flush(); } };
   }
 
-  window.views = { rotation, settings, guide, thumb };
+  // ---------- shared presets ----------
+  const SHARE_PAGE = 'https://patchbay-sage.vercel.app/app/flair/presets';
+  const count = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  const hostOf = (url) => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } };
+
+  function gallery(main, store) {
+    let q = '', sort = 'new', page = 1, pages = 1, token = 0;
+    const previews = [];
+    const grid = h('div.gallery');
+    const status = h('div.gallery-status');
+    const more = h('button.btn', { onclick: () => load(page + 1) }, 'Show more');
+    more.hidden = true;
+
+    const search = h('input.input.gallery-search', { placeholder: 'Search', maxLength: 60, spellcheck: false });
+    const searchSoon = debounce(() => { q = search.value; load(1); }, 350);
+    search.addEventListener('input', searchSoon);
+    const sortSeg = segmented([{ value: 'new', label: 'Newest' }, { value: 'popular', label: 'Popular' }], sort, (v) => { sort = v; load(1); });
+    const share = () => window.flair.call('link.open', { url: SHARE_PAGE }).catch((e) => toast(e.message, 'error'));
+
+    function tile(item) {
+      const p = item.preview;
+      const stage = h('div.gallery-card');
+      const card = window.preview.mount(stage);
+      const appId = store.appIdFor(p);
+      const ctx = { shared: true, user: store.snapshot.user, appId, app: store.cachedApp(appId), openedAt: Date.now() };
+      card.update(p, ctx);
+      store.lookup(appId).then((app) => { if (app && !(app instanceof Promise)) { ctx.app = app; card.update(p, ctx); } });
+      previews.push(card);
+
+      const hosts = [...new Set(p.buttons.map((b) => hostOf(b.url)).filter(Boolean))];
+      const importBtn = h('button.btn.primary', {
+        onclick: async () => {
+          importBtn.disabled = true;
+          try { store.imported(await window.flair.call('gallery.import', { id: item.id })); }
+          catch (e) { toast(e.message, 'error'); importBtn.disabled = false; }
+        },
+      }, icon('import'), 'Import');
+      const facts = [item.by ? 'by ' + item.by : null, item.count > 1 ? count(item.count, 'preset', 'presets') : null, count(item.downloads, 'download', 'downloads')];
+      return h('article.gallery-item', null,
+        stage,
+        h('div.gallery-info', null,
+          h('div.gallery-text', null,
+            h('div.gallery-title', null, item.title),
+            h('div.hint', null, facts.filter(Boolean).join(' · ')),
+            hosts.length ? h('div.hint.gallery-links', null, icon('link'), 'Buttons open ' + hosts.join(', ')) : null),
+          importBtn));
+    }
+
+    function nothing() {
+      if (q) return h('div.gallery-empty', null, h('p', null, 'Nothing matches that. Try other words.'));
+      return h('div.gallery-empty', null,
+        h('p', null, 'Nothing shared yet. Share one of yours and be the first.'),
+        h('button.btn', { onclick: share }, icon('link'), 'Share a preset'));
+    }
+
+    async function load(n) {
+      const my = ++token;
+      more.disabled = true;
+      if (n === 1) status.replaceChildren(h('div.hint', null, 'Loading presets...'));
+      try {
+        const r = await window.flair.call('gallery.list', { q, sort, page: n });
+        if (my !== token) return;
+        if (n === 1) { grid.replaceChildren(); previews.length = 0; }
+        page = r.page;
+        pages = r.pages;
+        r.items.forEach((it) => grid.append(tile(it)));
+        status.replaceChildren(...(grid.children.length ? [] : [nothing()]));
+        more.hidden = page >= pages || r.items.length === 0;
+      } catch (e) {
+        if (my !== token) return;
+        if (n === 1) grid.replaceChildren();
+        status.replaceChildren(h('div.gallery-empty', null, h('p', null, e.message), h('button.btn', { onclick: () => load(n) }, 'Try again')));
+      } finally {
+        if (my === token) more.disabled = false;
+      }
+    }
+
+    const view = h('section.view', null,
+      head('Presets', search, sortSeg, h('button.btn', { onclick: share }, icon('link'), 'Share yours')),
+      h('div.view-body', null,
+        h('p.hint.gallery-intro', null, 'Presets people share on Patchbay, shown on your own profile. Import adds a copy to your list, and nothing goes live until you press Go live.'),
+        grid, status, h('div.gallery-more', null, more)));
+    main.replaceChildren(view);
+    const ticker = setInterval(() => previews.forEach((c) => c.tick()), 1000);
+    load(1);
+    return { refresh() {}, leave() { clearInterval(ticker); searchSoon.cancel?.(); } };
+  }
+
+  window.views = { rotation, settings, guide, gallery, thumb };
 })();

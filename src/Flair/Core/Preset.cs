@@ -79,6 +79,9 @@ public sealed class Preset
         Hotkey ??= new HotkeySetting();
     }
 
+    /// <summary>For presets from someone else: a button that isn't a plain web link has no business being kept.</summary>
+    public void DropBadButtons() => Buttons.RemoveAll(b => !IsWebLink(b.Url));
+
     private static string Clip(string? s, int max) => s == null ? "" : s.Length <= max ? s : s[..max];
 
     public Preset Clone() => JsonSerializer.Deserialize<Preset>(JsonSerializer.Serialize(this, PresetStore.Json), PresetStore.Json)!;
@@ -297,6 +300,7 @@ public static class PresetFile
             p.Id = Preset.NewId();
             p.Hotkey = new HotkeySetting();
             p.Sanitize();
+            p.DropBadButtons();
             return p;
         }).ToList();
     }

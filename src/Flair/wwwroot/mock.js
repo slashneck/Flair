@@ -23,7 +23,21 @@
   let emit = () => {};
   const changed = () => setTimeout(() => emit('state', snapshot()), 30);
 
+  const shared = [
+    { title: 'Locked in pack', by: 'nova', downloads: 214, count: 3, p: { kind: 'playing', details: 'Ranked grind', state: 'Looking for a duo', largeImage: 'flair', partySize: 2, partyMax: 5, timer: 'elapsed', buttons: [{ label: 'Watch my clips', url: 'https://youtube.com/@nova' }] } },
+    { title: 'Lo-fi study', by: 'mika', downloads: 98, count: 1, p: { kind: 'listening', details: 'Lo-fi beats to study to', state: 'Chapter 4 of 12', largeImage: 'https://picsum.photos/seed/lofi/256', timer: 'countdown', countdownMinutes: 50, buttons: [] } },
+    { title: 'Movie night', by: 'ren', downloads: 41, count: 1, p: { kind: 'watching', details: 'Movie night', state: 'Back at 11', largeImage: 'https://picsum.photos/seed/cinema/256', timer: 'until', untilTime: '23:00', buttons: [{ label: 'Join the call', url: 'https://discord.gg/example' }] } },
+    { title: 'Tournament', by: 'kai', downloads: 17, count: 2, p: { kind: 'competing', details: 'Grand finals', state: 'Bracket B', largeImage: 'https://picsum.photos/seed/arena/256', partySize: 4, partyMax: 5, timer: 'elapsed', buttons: [] } },
+  ].map((s, i) => ({ id: '00000000-0000-4000-8000-00000000000' + i, title: s.title, by: s.by, downloads: s.downloads, count: s.count, createdAt: '',
+    preview: { id: id(), name: s.title, appId: '', largeText: '', smallImage: '', smallText: '', countdownMinutes: 60, untilTime: '20:00', partySize: 0, partyMax: 0, listShows: 'name', ...s.p } }));
+
   const handlers = {
+    'gallery.list': ({ q, sort, page }) => {
+      const items = shared.filter((s) => !q || s.title.toLowerCase().includes(q.toLowerCase()));
+      if (sort === 'popular') items.sort((a, b) => b.downloads - a.downloads);
+      return { q: q || '', sort, page, pages: 1, total: items.length, items };
+    },
+    'gallery.import': ({ id: sid }) => { const s = shared.find((x) => x.id === sid); const p = { ...structuredClone(s.preview), id: id(), hotkey: { key: 0 } }; presets.push(p); changed(); return { names: [p.name], first: p.id }; },
     'app.init': () => ({ snapshot: snapshot(), version: '1.0.0', update: { state: 'latest', current: '1.0.0' }, dev: true }),
     'app.lookup': ({ appId }) => ({ id: appId, name: 'my lil studio', iconUrl: null, assets: {}, found: true }),
     'preset.create': () => { const p = { ...structuredClone(presets[2]), id: id(), name: 'New status', details: '', state: '', timer: 'elapsed', hotkey: { key: 0 } }; presets.push(p); changed(); return p; },

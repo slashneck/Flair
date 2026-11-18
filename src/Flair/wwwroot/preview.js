@@ -97,12 +97,12 @@
       }
       if (buttons.length) {
         activity.append(h('div.dc-buttons', null, buttons.map((b) =>
-          h('div.dc-button', { title: b.url, onclick: () => window.flair.call('link.open', { url: b.url.trim() }).catch(() => {}) }, b.label))));
+          h('div.dc-button', { title: b.url, onclick: ctx.shared ? null : () => window.flair.call('link.open', { url: b.url.trim() }).catch(() => {}) }, b.label))));
       }
 
       const banner = h('div.dc-banner');
       const name = user?.displayName || 'You';
-      card.append(
+      card.append(...[
         h('div.dc-popout', null,
           banner,
           h('div.dc-head', null, h('div.dc-avatar', null, avatar(user, 80), h('span.status'))),
@@ -110,12 +110,12 @@
             h('div.dc-name', null, name),
             h('div.dc-user', null, user?.userName ? user.userName : 'your profile'),
             activity)),
-        h('div.dc-member', null,
+        ctx.shared ? null : h('div.dc-member', null,
           h('div.pic', null, avatar(user, 32)),
           h('div.who', null,
             h('div.n', null, name),
             h('div.a', null, kind.verb + ' ', h('b', null, listName(p, appName, details, state)))),
-          h('span.icon', null, icon(kind.icon))));
+          h('span.icon', null, icon(kind.icon)))].filter(Boolean));
       tick();
     }
 

@@ -59,6 +59,11 @@ it says so and reconnects by itself once Discord is back.
 **Share with friends.** Export one preset or a few to a small `.flair` file. Your friend double-clicks it or drops it
 on Flair, and it's in.
 
+**Shared presets.** Browse presets other people shared on
+[Patchbay](https://patchbay-sage.vercel.app/app/flair/presets), each shown as a card on your own profile, and import
+one with a click. Share yours there too. Shared presets go through the same checks as a file you open yourself, and
+Flair shows where their buttons lead before you import.
+
 ## Hotkeys
 
 | Action | Default |
@@ -102,11 +107,13 @@ Updates only replace program files. Uninstalling removes the program and leaves 
 ## Privacy
 
 Flair has no account, no telemetry and no server. It talks to the Discord app on your PC through its local Rich
-Presence connection and never sees your login or token. It only goes online for three things:
+Presence connection and never sees your login or token. It only goes online for these things:
 
 - **Your pictures.** The preview loads the https pictures your presets point at, just like Discord does.
 - **Your app's name and art.** Flair asks Discord for the public name and uploaded pictures of the Discord app your
   status uses, so the preview can show them.
+- **Shared presets.** Only while you have the *Presets* tab open, Flair asks Patchbay for the list and downloads the one
+  you import. Nothing about you is sent.
 - **The update check** asks GitHub whether a new version exists. Switch it off under Settings.
 
 ## Building
